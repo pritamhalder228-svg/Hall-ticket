@@ -250,318 +250,6 @@
 <body>
 <div class="app">
 
-  <!-- ================= ONBOARDING MODAL ================= -->
-  <!-- FIX: Removed display:flex from inline styles so it properly stays hidden initially -->
-  <div id="onboardModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(15,26,46,0.92);align-items:center;justify-content:center;padding:24px;">
-    <div style="background:#fff9ee;border-radius:16px;padding:26px 22px;max-width:380px;width:100%;text-align:center;">
-      <div style="font-size:34px;margin-bottom:6px">🎓</div>
-      <h2 style="font-family:var(--display);font-size:20px;margin:0 0 6px">Welcome to Hall Ticket</h2>
-      <p class="muted" style="margin-bottom:16px">What should we call you? This name shows up to your study group members.</p>
-      <input type="text" id="onboardNameInput" placeholder="Your name" style="margin-bottom:14px">
-      <button class="btn btn-gold btn-block" id="btnOnboardSave">Let's go</button>
-    </div>
-  </div>
-
-  <!-- ================= MEMBER STATS MODAL ================= -->
-  <div id="memberModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(15,26,46,0.92);align-items:center;justify-content:center;padding:24px;">
-    <div style="background:#fff9ee;border-radius:16px;padding:22px;max-width:340px;width:100%;text-align:center;">
-      <h2 id="mmName" style="margin:0 0 4px;font-family:var(--display);font-size:22px;">Member Name</h2>
-      <p id="mmRole" class="muted" style="margin:0 0 16px; font-size:12px; text-transform:uppercase; letter-spacing:1px;"></p>
-      <div class="stats-summary-grid" style="text-align:left;">
-        <div class="stats-stat"><div class="v" id="mmDays">0</div><div class="l">Days Present</div></div>
-        <div class="stats-stat"><div class="v" id="mmTargets">0</div><div class="l">Targets Done</div></div>
-        <div class="stats-stat" style="grid-column: span 2;"><div class="v" id="mmHours">0h</div><div class="l">Total Study Time</div></div>
-      </div>
-      <button class="btn btn-outline btn-block" id="btnCloseMemberModal" style="margin-top:16px">Close</button>
-    </div>
-  </div>
-
-
-  <header class="hero">
-    <div class="hero-top">
-      <div>
-        <div class="eyebrow">Candidate Progress Record</div>
-        <h1 class="title" id="examTitle">Hall Ticket</h1>
-      </div>
-      <div class="seal" id="seal">
-        <div class="n" id="sealPct">—</div>
-        <div class="l" id="sealLabel">SET UP<br>EXAM</div>
-      </div>
-    </div>
-    <div class="streak-row">
-      <div class="chip">🔥 Streak <b id="streakChip">0</b>d</div>
-      <div class="chip">📅 Day <b id="dayChip">—</b></div>
-      <div class="chip">⏱ Today <b id="todayMinsChip">0m</b></div>
-      <div class="chip">⏳ <b id="countdownChip">—</b> left</div>
-      <button class="chip" id="themeToggleBtn" style="cursor:pointer;border:1px solid rgba(255,255,255,0.18)">🌓</button>
-    </div>
-  </header>
-
-  <main>
-
-    <!-- ================= TODAY TAB ================= -->
-    <section id="tab-today">
-      <div class="tip-box" id="aiTipBox" style="display:none">
-        <div class="ic">💡</div>
-        <div id="aiTipText"></div>
-      </div>
-
-      <div class="card">
-        <h2>Today's Targets <span class="tag" id="todayCountTag">0/0</span></h2>
-        <div id="todayTargets"><div class="empty">No targets set for today yet. Go to Setup to add some.</div></div>
-      </div>
-
-      <div class="card backlog">
-        <h2>⚠ Backlog <span class="tag" id="backlogCountTag">0</span></h2>
-        <p class="muted">Missed targets from earlier days. Complete these anytime before your exam to recover your probability.</p>
-        <div id="backlogList"></div>
-      </div>
-
-      <div class="card">
-        <h2>Progress this week</h2>
-        <canvas id="weekChart" height="160"></canvas>
-        <div class="badge-row" id="badgeRow"></div>
-      </div>
-
-      <div class="card share-card-wrap">
-        <h2 style="justify-content:center">Share your progress</h2>
-        <canvas id="shareCanvas" width="600" height="360" style="display:none"></canvas>
-        <button class="btn btn-gold btn-block" id="btnGenShare">🖼 Generate share card</button>
-        <div id="shareDownloadRow" style="display:none;margin-top:8px; gap:8px;">
-            <button class="btn btn-primary" id="btnDownloadShare" style="flex:1">⬇ Download</button>
-            <button class="btn btn-outline" id="btnHideShare" style="flex:1">✕ Hide</button>
-        </div>
-      </div>
-
-      <div class="card share-card-wrap">
-        <h2 style="justify-content:center">Weekly report</h2>
-        <p class="muted">A one-page summary of the last 7 days — study time, targets, s    --paper:#101826;
-    --paper-2:#1B2536;
-    --navy:#0C1420;
-    --navy-2:#070C14;
-    --gold:#D9AE55;
-    --gold-soft:#EAD6A0;
-    --green:#4FA06A;
-    --red:#C4595C;
-    --line:rgba(237,231,214,0.14);
-  }
-  html[data-theme="dark"] .card{background:#16202F;border-color:var(--line);}
-  html[data-theme="dark"] input, html[data-theme="dark"] textarea, html[data-theme="dark"] select{
-    background:#1B2536;color:var(--ink);border-color:var(--line);
-  }
-  html[data-theme="dark"] .segmented button{background:#1B2536;color:var(--ink);}
-  html[data-theme="dark"] .cal-cell{background:#1B2536;}
-
-  *{box-sizing:border-box;}
-  html{scrollbar-color: var(--gold) transparent;}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;transition:background .25s ease,color .25s ease;}
-  ::selection{background:var(--gold-soft);}
-  ::-webkit-scrollbar{width:8px;height:8px;}
-  ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:8px;}
-
-  @media (prefers-reduced-motion: no-preference){
-    .card{transition:transform .18s ease, box-shadow .18s ease, background .25s ease, border-color .25s ease;}
-    .card:active{transform:scale(0.99);}
-    .tab-content-enter{animation:fadeSlide .28s ease both;}
-    @keyframes fadeSlide{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-    .seal{transition:transform .4s cubic-bezier(.34,1.56,.64,1), border-color .3s ease;}
-    .seal.pulse{animation:sealPulse .5s ease;}
-    @keyframes sealPulse{0%{transform:scale(1);}45%{transform:scale(1.12) rotate(-4deg);}100%{transform:scale(1);}}
-    .target-item{transition:opacity .2s ease;}
-    .target-item.done{animation:doneFlash .35s ease;}
-    @keyframes doneFlash{0%{background:rgba(62,122,84,0.22);}100%{background:transparent;}}
-    .btn{transition:transform .1s ease, box-shadow .15s ease;}
-    .btn:hover{box-shadow:0 3px 10px rgba(0,0,0,0.12);}
-    .chip{transition:transform .15s ease;}
-  }
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
-  }
-
-  .skeleton{background:linear-gradient(90deg, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.11) 37%, rgba(0,0,0,0.06) 63%);background-size:400% 100%;animation:skeletonWave 1.3s ease infinite;border-radius:8px;}
-  @keyframes skeletonWave{0%{background-position:100% 50%;}100%{background-position:0 50%;}}
-
-  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-  .badge{font-family:var(--mono);font-size:10.5px;background:var(--paper-2);border:1px solid var(--line);padding:5px 9px;border-radius:20px;display:flex;align-items:center;gap:4px;opacity:.4;}
-  .badge.earned{opacity:1;background:linear-gradient(135deg,var(--gold-soft),var(--gold));color:var(--navy-2);border-color:var(--gold);font-weight:700;}
-
-  .tip-box{background:linear-gradient(135deg, rgba(200,155,60,0.10), rgba(200,155,60,0.03));border:1px solid var(--gold);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;}
-  .tip-box .ic{font-size:18px;flex-shrink:0;}
-
-  .settings-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px;}
-  .settings-row:last-child{border-bottom:none;}
-  .settings-row .desc{font-size:11.5px;color:rgba(128,120,100,0.85);margin-top:2px;}
-  .switch{position:relative;width:44px;height:25px;flex-shrink:0;}
-  .switch input{opacity:0;width:0;height:0;}
-  .slider-toggle{position:absolute;cursor:pointer;inset:0;background:var(--paper-2);border-radius:20px;transition:.2s;border:1px solid var(--line);}
-  .slider-toggle::before{content:"";position:absolute;height:19px;width:19px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.2s;}
-  .switch input:checked + .slider-toggle{background:var(--green);}
-  .switch input:checked + .slider-toggle::before{transform:translateX(19px);}
-
-  .share-card-wrap{text-align:center;}
-  #shareCanvas{max-width:100%;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
-
-  .subj-tag{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:6px;margin-right:7px;color:#fff;vertical-align:middle;white-space:nowrap;}
-  .target-item label{display:inline;}
-  #weeklyReportCanvas{max-width:100%;border-radius:10px;margin-bottom:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);}
-
-  .goal-bar-row{margin-bottom:14px;}
-  .goal-bar-label{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;}
-  .goal-bar-track{height:10px;border-radius:6px;background:var(--paper-2);overflow:hidden;}
-  .goal-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:6px;transition:width .4s ease;}
-  .stats-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-  .stats-stat{background:var(--paper-2);border-radius:10px;padding:10px 12px;}
-  .stats-stat .v{font-family:var(--mono);font-size:18px;font-weight:700;}
-  .stats-stat .l{font-size:10.5px;color:rgba(28,27,24,0.6);text-transform:uppercase;letter-spacing:.03em;}
-
-  details{margin-top:6px;}
-  details summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--navy);list-style:none;display:flex;align-items:center;gap:6px;padding:6px 0;}
-  html[data-theme="dark"] details summary{color:var(--gold-soft);}
-  details summary::-webkit-details-marker{display:none;}
-  details summary::before{content:"›";display:inline-block;transition:transform .2s ease;font-size:15px;}
-  details[open] summary::before{transform:rotate(90deg);}
-  details summary h2{font-size:13px !important;font-weight:600 !important;color:inherit !important;}
-  .medal{font-size:14px;margin-right:4px;}
-  .history-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
-  .history-row:last-child{border-bottom:none;}
-
-  .app{max-width:520px;margin:0 auto;min-height:100vh;background:var(--paper);position:relative;padding-bottom:84px;}
-
-  /* Header: admit-card strip */
-  header.hero{
-    background:linear-gradient(155deg,var(--navy) 0%,var(--navy-2) 100%);
-    color:var(--paper);
-    padding:22px 20px 26px;
-    position:relative;
-    overflow:hidden;
-  }
-  header.hero::after{
-    content:"";position:absolute;left:0;right:0;bottom:-1px;height:16px;
-    background-image:radial-gradient(circle at 10px 8px, var(--paper) 8px, transparent 9px);
-    background-size:20px 16px;background-repeat:repeat-x;
-  }
-  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;}
-  .eyebrow{font-family:var(--mono);letter-spacing:.14em;font-size:11px;color:var(--gold-soft);text-transform:uppercase;}
-  h1.title{font-family:var(--display);font-size:26px;margin:4px 0 0;font-weight:600;}
-  .seal{
-    width:58px;height:58px;border-radius:50%;border:2px solid var(--gold);
-    display:flex;align-items:center;justify-content:center;flex-direction:column;
-    font-family:var(--mono);text-align:center;flex-shrink:0;background:rgba(200,155,60,0.08);
-  }
-  .seal .n{font-size:15px;font-weight:700;color:var(--gold-soft);line-height:1;}
-  .seal .l{font-size:7px;letter-spacing:.06em;color:var(--paper);opacity:.75;margin-top:2px;}
-  .seal.pass{border-color:var(--green);} .seal.pass .n{color:#8FD1A5;}
-  .seal.risk{border-color:var(--red);} .seal.risk .n{color:#E39A9C;}
-
-  .streak-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
-  .chip{font-family:var(--mono);font-size:11px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:5px 10px;border-radius:20px;color:var(--paper);}
-  .chip b{color:var(--gold-soft);}
-
-  main{padding:18px 16px 8px;}
-  .card{
-    background:#fff9ee;border:1px solid var(--line);border-radius:14px;
-    padding:16px 16px;margin-bottom:14px;
-    box-shadow:0 1px 0 rgba(0,0,0,0.03);
-  }
-  .card h2{font-family:var(--display);font-size:17px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;}
-  .card h2 .tag{font-family:var(--mono);font-size:10px;background:var(--paper-2);padding:3px 8px;border-radius:20px;color:var(--ink);opacity:.75;}
-  .muted{color:rgba(28,27,24,0.6);font-size:13px;line-height:1.5;}
-  .empty{border:1px dashed var(--line);border-radius:10px;padding:18px;text-align:center;color:rgba(28,27,24,0.55);font-size:13px;}
-
-  .target-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);}
-  .target-item:last-child{border-bottom:none;}
-  .target-item input[type=checkbox]{width:19px;height:19px;margin-top:1px;accent-color:var(--green);flex-shrink:0;}
-  .target-item.done label{text-decoration:line-through;opacity:.55;}
-  .target-item label{font-size:14px;line-height:1.4;}
-
-  .backlog .target-item label{color:var(--red);}
-
-  .timer-display{font-family:var(--mono);font-size:44px;text-align:center;letter-spacing:.03em;margin:6px 0 14px;font-variant-numeric:tabular-nums;}
-  .timer-btns{display:flex;gap:10px;justify-content:center;}
-  .btn{
-    border:none;border-radius:10px;padding:12px 18px;font-family:var(--body);font-weight:600;
-    font-size:14px;cursor:pointer;transition:transform .08s ease;
-  }
-  .btn:active{transform:scale(0.96);}
-  .btn-primary{background:var(--navy);color:var(--paper);}
-  .btn-gold{background:var(--gold);color:var(--navy-2);}
-  .btn-outline{background:transparent;border:1px solid var(--line);color:var(--ink);}
-  .btn-danger{background:var(--red);color:#fff;}
-  .btn-sm{padding:8px 12px;font-size:12px;border-radius:8px;}
-  .btn-block{width:100%;}
-  .btn:disabled{opacity:.4;cursor:not-allowed;}
-
-  .today-total{text-align:center;font-size:12px;color:rgba(28,27,24,0.6);margin-top:2px;}
-
-  input[type=text],input[type=date],input[type=number],textarea,select{
-    width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:9px;
-    font-family:var(--body);font-size:14px;background:#fff;color:var(--ink);margin-top:4px;
-  }
-  textarea{min-height:90px;resize:vertical;font-family:var(--mono);font-size:13px;}
-  label.field-label{font-size:12px;font-weight:600;color:rgba(28,27,24,0.7);text-transform:uppercase;letter-spacing:.04em;}
-  .field{margin-bottom:12px;}
-
-  .segmented{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-top:4px;}
-  .segmented button{flex:1;padding:9px 4px;font-size:11.5px;background:#fff;border:none;border-right:1px solid var(--line);cursor:pointer;font-family:var(--body);}
-  .segmented button:last-child{border-right:none;}
-  .segmented button.active{background:var(--navy);color:var(--paper);}
-
-  nav.tabbar{
-    position:fixed;bottom:0;left:0;right:0;background:var(--navy);
-    display:flex;max-width:520px;margin:0 auto;
-    border-top:1px solid rgba(255,255,255,0.08);
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-  nav.tabbar button{
-    flex:1;background:none;border:none;color:rgba(232,226,208,0.55);
-    padding:10px 2px 8px;font-size:10.5px;font-family:var(--body);cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;gap:3px;
-  }
-  nav.tabbar button.active{color:var(--gold-soft);}
-  nav.tabbar .ic{font-size:18px;}
-
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:6px;}
-  .cal-cell{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-family:var(--mono);border:1px solid var(--line);background:#fff;cursor:pointer;}
-  .cal-cell.done{background:rgba(62,122,84,0.18);border-color:var(--green);}
-  .cal-cell.miss{background:rgba(166,61,64,0.14);border-color:var(--red);}
-  .cal-cell.today{outline:2px solid var(--gold);}
-  .cal-cell.empty2{visibility:hidden;}
-  .cal-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:2px;}
-  .cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-family:var(--display);font-size:15px;}
-  .cal-nav button{background:none;border:none;font-size:16px;cursor:pointer;color:var(--ink);}
-
-  .group-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;}
-  .group-row:last-child{border-bottom:none;}
-  .avatar-dot{width:9px;height:9px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px;}
-  .avatar-dot.off{background:#bbb;}
-  code.code{font-family:var(--mono);background:var(--paper-2);padding:2px 7px;border-radius:6px;font-size:13px;}
-
-  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--navy);color:var(--paper);padding:10px 18px;border-radius:20px;font-size:13px;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,0.25);}
-
-  .warn-box{background:rgba(200,155,60,0.12);border:1px solid var(--gold);border-radius:9px;padding:10px 12px;font-size:12px;line-height:1.5;margin-top:8px;}
-
-  a.link{color:var(--navy);font-weight:600;}
-  hr.sep{border:none;border-top:1px solid var(--line);margin:16px 0;}
-  
-  .clickable-member { cursor:pointer; transition: opacity .2s ease; }
-  .clickable-member:active { opacity: 0.6; }
-</style>
-</head>
-<body>
-<div class="app">
-
-  <!-- ================= ONBOARDING MODAL ================= -->
-  <div id="onboardModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(15,26,46,0.92);display:flex;align-items:center;justify-content:center;padding:24px;">
-    <div style="background:#fff9ee;border-radius:16px;padding:26px 22px;max-width:380px;width:100%;text-align:center;">
-      <div style="font-size:34px;margin-bottom:6px">🎓</div>
-      <h2 style="font-family:var(--display);font-size:20px;margin:0 0 6px">Welcome to Hall Ticket</h2>
-      <p class="muted" style="margin-bottom:16px">What should we call you? This name shows up to your study group members.</p>
-      <input type="text" id="onboardNameInput" placeholder="Your name" style="margin-bottom:14px">
-      <button class="btn btn-gold btn-block" id="btnOnboardSave">Let's go</button>
-    </div>
-  </div>
-
   <!-- ================= MEMBER STATS MODAL ================= -->
   <div id="memberModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(15,26,46,0.92);align-items:center;justify-content:center;padding:24px;">
     <div style="background:#fff9ee;border-radius:16px;padding:22px;max-width:340px;width:100%;text-align:center;">
@@ -711,7 +399,11 @@
         <p class="muted">See any stretch of your prep — however far back — as one chart.</p>
         <div class="field"><label class="field-label">From</label><input type="date" id="statsFrom"></div>
         <div class="field"><label class="field-label">To</label><input type="date" id="statsTo"></div>
-        <button class="btn btn-gold btn-block" id="btnShowStats" style="margin-bottom:12px">Show stats</button>
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button class="btn btn-gold" id="btnShowStats" style="flex:1;">Show stats</button>
+          <!-- FIX: Added a hide stats button -->
+          <button class="btn btn-outline" id="btnHideStats" style="flex:1; display:none;">✕ Hide stats</button>
+        </div>
         <div id="statsSummary"></div>
         <canvas id="statsChart" height="200" style="display:none"></canvas>
         <div id="statsSubjectBreakdown" style="margin-top:12px"></div>
@@ -955,17 +647,7 @@ let targets = load(LS.targets, {});             // date -> [strings]
 let logs = load(LS.logs, {});                   // date -> {studySeconds, completed, timerRunning, timerStartedAt}
 let fbConfig = load(LS.fbConfig, null);
 let displayName = load(LS.displayName, '');
-if(!displayName){
-  document.getElementById('onboardModal').style.display='flex';
-}
-document.getElementById('btnOnboardSave').addEventListener('click', ()=>{
-  const val = document.getElementById('onboardNameInput').value.trim();
-  if(!val){ showToast('Type a name to continue'); return; }
-  displayName = val; save(LS.displayName, displayName);
-  document.getElementById('onboardModal').style.display='none';
-  const dni = document.getElementById('displayNameInput');
-  if(dni) dni.value = displayName;
-});
+
 let backupId = load(LS.backupId, null);
 let reminderTime = load(LS.reminder, null);
 let settings = load(LS.settings, {sound:true, haptic:true, tips:true, dark:false});
@@ -1802,6 +1484,17 @@ document.getElementById('btnShowStats').addEventListener('click', ()=>{
       </div>`;
     }).join('');
   }
+  
+  // FIX: Show the hide button
+  document.getElementById('btnHideStats').style.display = 'block';
+});
+
+// FIX: Added Hide Stats logic
+document.getElementById('btnHideStats').addEventListener('click', ()=>{
+  document.getElementById('statsSummary').innerHTML = '';
+  document.getElementById('statsChart').style.display = 'none';
+  document.getElementById('statsSubjectBreakdown').innerHTML = '';
+  document.getElementById('btnHideStats').style.display = 'none';
 });
 
 /* ---------------- Setup: exam ---------------- */
